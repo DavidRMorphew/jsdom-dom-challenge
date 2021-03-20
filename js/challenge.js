@@ -2,22 +2,28 @@ const timer = document.getElementById('counter')
 const likeTracker = {}
 const ul = document.querySelector('ul.likes');
 let paused = false;
+const pauseButton = document.getElementById("pause");
+const plus = document.getElementById('plus')
+const minus = document.getElementById('minus')
+const heart = document.getElementById('heart')
+const submit = document.getElementById('submit')
+const comments = document.querySelector(".comments")
+const commentInput = document.getElementById("comment-input")
+const submitButton = document.querySelector("#submit")
 
-function incrementTimer(){
+  function incrementTimer(){
     if (!paused) {
         let newTime = parseInt(timer.innerText)
         newTime += 1
         timer.innerText = newTime
     }
-    }
+  }
   function automaticallyIncrement() {
-    //timer to call function every second
       setInterval(function(){
         incrementTimer()
       }, 1000)
   }
-  function manuallyIncrement() {
-    const plus = document.getElementById('plus')
+  function manuallyIncrement() { 
     plus.addEventListener('click', incrementTimer);
   }
     function decrementTimer(){
@@ -29,16 +35,13 @@ function incrementTimer(){
         }
     }
     function manuallyDecrementTimer() {
-      const minus = document.getElementById('minus')
+      
       minus.addEventListener('click', decrementTimer);
     }
     function onHeartClick() {
-      let heart = document.getElementById('heart')
+      
       heart.addEventListener('click', likeNumber);
     }
-
-    manuallyIncrement();
-    manuallyDecrementTimer();
 
     function likeNumber() {
         // create a list element that
@@ -60,18 +63,43 @@ function incrementTimer(){
     }
 
     function pauseClick() {
-        const button = document.getElementById("pause");
-        button.addEventListener('click', pause);
+        pauseButton.addEventListener('click', pause);
     }
 
     function pause() {
-        console.log("paused!")
-        // disable manual incr and decr with .disable on buttons
-        // disable auto-counter
         paused = !paused;
-       console.log(paused);
 
+        plus.disabled = !plus.disabled
+        minus.disabled = !minus.disabled
+        heart.disabled = !heart.disabled
+        submit.disabled = !submit.disabled
+
+        const pauseButtonValue = pauseButton.innerHTML === "resume" ? "pause" : "resume";
+        pauseButton.innerHTML = pauseButtonValue;
     }
+    
+submitButton.addEventListener("click",function(event) {
+      event.preventDefault()
+      if (commentInput.value != "") {
+        comments.innerHTML += `<li>${commentInput.value}</li>`
+        commentInput.value = ""
+      } else {
+        alert("Comment was blank. Please try again.")
+      }
+})
+
+const restartButton = document.createElement('button');
+pauseButton.insertAdjacentElement('afterend', restartButton);
+restartButton.innerHTML = "Restart"
+
+restartButton.addEventListener('click', function() {
+  pause();
+  timer.innerText = "0"
+  pause();
+});
+
     automaticallyIncrement();
     onHeartClick();
     pauseClick();
+    manuallyIncrement();
+    manuallyDecrementTimer();
